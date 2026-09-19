@@ -14,7 +14,7 @@ abstract class CategoryService extends ChopperService {
       _$CategoryService(client);
 
   @GET()
-  Future<Response<CategoryListResponse>> getCategories({
+  Future<CategoryListResponse> getCategories({
     @Query() int? page,
     @Query('per_page') int? perPage,
     @Query('show_inactive') bool? showInactive,
@@ -22,12 +22,10 @@ abstract class CategoryService extends ChopperService {
   });
 
   @POST()
-  Future<Response<CategoryResponse>> createCategory(
-    @Body() AddCategoryRequest body,
-  );
+  Future<CategoryResponse> createCategory(@Body() AddCategoryRequest body);
 
   @GET(path: '/{id}')
-  Future<Response<CategoryResponse>> getCategory(@Path() int id);
+  Future<CategoryResponse> getCategory(@Path() int id);
 
   @PATCH(path: '/{id}')
   Future<Response> updateCategory(

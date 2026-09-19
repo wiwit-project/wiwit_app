@@ -10,5 +10,5 @@ abstract class AuthService extends ChopperService {
   static AuthService create([ChopperClient? client]) => _$AuthService(client);
 
   @POST(path: '/login')
-  Future<Response<LoginResponse>> login(@Body() LoginRequest body);
+  Future<LoginResponse> login(@Body() LoginRequest body);
 }

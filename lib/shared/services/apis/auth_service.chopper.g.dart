@@ -19,10 +19,12 @@ final class _$AuthService extends AuthService {
   final Type definitionType = AuthService;
 
   @override
-  Future<Response<LoginResponse>> login(LoginRequest body) {
+  Future<LoginResponse> login(LoginRequest body) async {
     final Uri $url = Uri.parse('/api/v1/auth/login');
     final $body = body;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    return client.send<LoginResponse, LoginResponse>($request);
+    final Response<LoginResponse> $response = await client
+        .send<LoginResponse, LoginResponse>($request);
+    return $response.bodyOrThrow;
   }
 }

@@ -10,5 +10,5 @@ abstract class InstanceService extends ChopperService {
       _$InstanceService(client);
 
   @GET()
-  Future<Response<InstanceResponse>> getInstance();
+  Future<InstanceResponse> getInstance();
 }

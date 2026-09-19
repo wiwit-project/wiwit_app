@@ -1,4 +1,3 @@
-import 'package:chopper/chopper.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
@@ -70,14 +69,11 @@ class _HomeState extends ConsumerState<Home> with WidgetsBindingObserver {
   Future<({List<TransactionResponse>? data, String? error})>
   _fetchTransactions() async {
     try {
-      final response = await ref
+      final transactionList = await ref
           .read(transactionServiceProvider)
           .getTransactions(perPage: _transactionsPerPage);
 
-      return (
-        data: response.body?.data ?? <TransactionResponse>[],
-        error: null,
-      );
+      return (data: transactionList.data, error: null);
     } on ProblemDetails catch (error) {
       return (data: null, error: error.detail);
     } catch (error) {
@@ -106,18 +102,16 @@ class _HomeState extends ConsumerState<Home> with WidgetsBindingObserver {
 
   /// Fetches the profile name shown in the greeting.
   Future<void> _loadProfile() async {
-    final Response<ProfileResponse> response;
+    final ProfileResponse profile;
     try {
-      response = await ref.read(profileServiceProvider).getProfile();
+      profile = await ref.read(profileServiceProvider).getProfile();
     } on ProblemDetails {
       return;
     }
 
-    final profileDetail = response.body;
+    if (!mounted) return;
 
-    if (!mounted || profileDetail == null) return;
-
-    setState(() => _userProfile = profileDetail);
+    setState(() => _userProfile = profile);
   }
 
   /// Refetches and animates only what actually changed

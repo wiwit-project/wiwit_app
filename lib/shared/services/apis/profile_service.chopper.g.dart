@@ -19,9 +19,11 @@ final class _$ProfileService extends ProfileService {
   final Type definitionType = ProfileService;
 
   @override
-  Future<Response<ProfileResponse>> getProfile() {
+  Future<ProfileResponse> getProfile() async {
     final Uri $url = Uri.parse('/api/v1/profile');
     final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<ProfileResponse, ProfileResponse>($request);
+    final Response<ProfileResponse> $response = await client
+        .send<ProfileResponse, ProfileResponse>($request);
+    return $response.bodyOrThrow;
   }
 }

@@ -104,10 +104,10 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
 
     final List<CategoryResponse> categories;
     try {
-      final response = await ref
+      final categoryList = await ref
           .read(categoryServiceProvider)
           .getCategories(perPage: _categoriesPerPage);
-      categories = response.body?.data ?? [];
+      categories = categoryList.data;
     } on ProblemDetails {
       // ignore error when failed to fetch latest categories
       return;
@@ -121,12 +121,11 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
   Future<void> _create() async {
     setState(() => _isCreating = true);
 
-    final CategoryResponse? created;
+    final CategoryResponse created;
     try {
-      final response = await ref
+      created = await ref
           .read(categoryServiceProvider)
           .createCategory(AddCategoryRequest(name: _query));
-      created = response.body;
     } on ProblemDetails catch (error) {
       if (!mounted) return;
       setState(() => _isCreating = false);
@@ -137,14 +136,6 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
     }
 
     if (!mounted) return;
-
-    if (created == null) {
-      setState(() => _isCreating = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not create the category.')),
-      );
-      return;
-    }
 
     Navigator.pop(context, created);
   }

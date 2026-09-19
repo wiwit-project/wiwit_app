@@ -38,12 +38,7 @@ class _ServerPageState extends ConsumerState<ServerPage> {
 
   Future<({InstanceResponse? data, String? error})> _fetchInstance() async {
     try {
-      final response = await ref.read(instanceServiceProvider).getInstance();
-      final instance = response.body;
-
-      if (instance == null) {
-        return (data: null, error: 'The server did not describe itself.');
-      }
+      final instance = await ref.read(instanceServiceProvider).getInstance();
 
       return (data: instance, error: null);
     } on ProblemDetails catch (error) {

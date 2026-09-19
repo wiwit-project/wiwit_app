@@ -124,10 +124,10 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
   Future<void> _loadCategories() async {
     var categories = <CategoryResponse>[];
     try {
-      final categoryResponse = await ref
+      final categoryList = await ref
           .read(categoryServiceProvider)
           .getCategories(perPage: 100, sort: CategorySort.mostUsed);
-      categories = categoryResponse.body?.data ?? [];
+      categories = categoryList.data;
     } on ProblemDetails catch (e) {
       log('Error occured: $e');
     }

@@ -19,9 +19,11 @@ final class _$InstanceService extends InstanceService {
   final Type definitionType = InstanceService;
 
   @override
-  Future<Response<InstanceResponse>> getInstance() {
+  Future<InstanceResponse> getInstance() async {
     final Uri $url = Uri.parse('/api/v1/instance');
     final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<InstanceResponse, InstanceResponse>($request);
+    final Response<InstanceResponse> $response = await client
+        .send<InstanceResponse, InstanceResponse>($request);
+    return $response.bodyOrThrow;
   }
 }

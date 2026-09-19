@@ -10,5 +10,5 @@ abstract class ProfileService extends ChopperService {
       _$ProfileService(client);
 
   @GET()
-  Future<Response<ProfileResponse>> getProfile();
+  Future<ProfileResponse> getProfile();
 }

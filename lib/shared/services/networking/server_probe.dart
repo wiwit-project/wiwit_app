@@ -63,11 +63,9 @@ Future<InstanceResponse?> _probeInstance(String baseUrl) async {
   );
 
   try {
-    final response = await InstanceService.create(
+    return await InstanceService.create(
       client,
     ).getInstance().timeout(_probeTimeout);
-
-    return response.body;
   } catch (_) {
     return null;
   } finally {

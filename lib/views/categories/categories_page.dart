@@ -52,7 +52,7 @@ class _CategoriesPageState extends ConsumerState<CategoriesPage> {
   Future<({List<CategoryResponse>? data, String? error})>
   _fetchCategories() async {
     try {
-      final response = await ref
+      final categoryList = await ref
           .read(categoryServiceProvider)
           .getCategories(
             perPage: _perPage,
@@ -60,7 +60,7 @@ class _CategoriesPageState extends ConsumerState<CategoriesPage> {
             sort: CategorySort.name,
           );
 
-      return (data: response.body?.data ?? <CategoryResponse>[], error: null);
+      return (data: categoryList.data, error: null);
     } on ProblemDetails catch (error) {
       return (data: null, error: error.detail);
     } catch (error) {

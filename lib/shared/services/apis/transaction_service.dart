@@ -12,7 +12,7 @@ abstract class TransactionService extends ChopperService {
       _$TransactionService(client);
 
   @GET()
-  Future<Response<TransactionListResponse>> getTransactions({
+  Future<TransactionListResponse> getTransactions({
     @Query() int? page,
     @Query('per_page') int? perPage,
     @Query() String? type,
@@ -22,12 +22,12 @@ abstract class TransactionService extends ChopperService {
   });
 
   @POST()
-  Future<Response<TransactionResponse>> createTransaction(
+  Future<TransactionResponse> createTransaction(
     @Body() AddTransactionRequest body,
   );
 
   @GET(path: '/{id}')
-  Future<Response<TransactionResponse>> getTransaction(@Path() int id);
+  Future<TransactionResponse> getTransaction(@Path() int id);
 
   @PATCH(path: '/{id}')
   Future<Response> updateTransaction(

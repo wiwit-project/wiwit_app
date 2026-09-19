@@ -43,10 +43,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _loadServerVersion() async {
     try {
-      final response = await ref.read(instanceServiceProvider).getInstance();
-      final instance = response.body;
+      final instance = await ref.read(instanceServiceProvider).getInstance();
 
-      if (!mounted || instance == null) return;
+      if (!mounted) return;
       setState(() => _instance = instance);
     } catch (e) {
       debugPrint('Failed to load server version: $e');
@@ -71,12 +70,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         deviceName: await _getDeviceName(),
       );
 
-      final response = await ref.read(authServiceProvider).login(request);
+      final loginResponse = await ref.read(authServiceProvider).login(request);
 
       if (!mounted) return;
 
-      final token = response.body?.token;
-      if (token == null || token.isEmpty) {
+      final token = loginResponse.token;
+      if (token.isEmpty) {
         throw Exception('The server did not return a token');
       }
 

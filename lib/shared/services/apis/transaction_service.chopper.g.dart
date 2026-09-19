@@ -19,14 +19,14 @@ final class _$TransactionService extends TransactionService {
   final Type definitionType = TransactionService;
 
   @override
-  Future<Response<TransactionListResponse>> getTransactions({
+  Future<TransactionListResponse> getTransactions({
     int? page,
     int? perPage,
     String? type,
     int? categoryId,
     String? dateFrom,
     String? dateTo,
-  }) {
+  }) async {
     final Uri $url = Uri.parse('/api/v1/transactions');
     final Map<String, dynamic> $params = <String, dynamic>{
       'page': page,
@@ -42,26 +42,30 @@ final class _$TransactionService extends TransactionService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<TransactionListResponse, TransactionListResponse>(
-      $request,
-    );
+    final Response<TransactionListResponse> $response = await client
+        .send<TransactionListResponse, TransactionListResponse>($request);
+    return $response.bodyOrThrow;
   }
 
   @override
-  Future<Response<TransactionResponse>> createTransaction(
+  Future<TransactionResponse> createTransaction(
     AddTransactionRequest body,
-  ) {
+  ) async {
     final Uri $url = Uri.parse('/api/v1/transactions');
     final $body = body;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    return client.send<TransactionResponse, TransactionResponse>($request);
+    final Response<TransactionResponse> $response = await client
+        .send<TransactionResponse, TransactionResponse>($request);
+    return $response.bodyOrThrow;
   }
 
   @override
-  Future<Response<TransactionResponse>> getTransaction(int id) {
+  Future<TransactionResponse> getTransaction(int id) async {
     final Uri $url = Uri.parse('/api/v1/transactions/${id}');
     final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<TransactionResponse, TransactionResponse>($request);
+    final Response<TransactionResponse> $response = await client
+        .send<TransactionResponse, TransactionResponse>($request);
+    return $response.bodyOrThrow;
   }
 
   @override
