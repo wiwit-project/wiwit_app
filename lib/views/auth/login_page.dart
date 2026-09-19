@@ -160,201 +160,236 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         Gap(20),
 
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 6),
-                              Text(
-                                'Email',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Gap(12),
-
-                              TextFormField(
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.0,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(28.0),
-                                  ),
-                                  fillColor:
-                                      theme.colorScheme.secondaryContainer,
-                                  filled: true,
-                                  hintText: 'you@example.com',
-                                ),
-                                validator: (v) {
-                                  if (v == null || v.trim().isEmpty) {
-                                    return 'Please enter your email';
-                                  }
-                                  final emailReg = RegExp(
-                                    r'^[^@\s]+@[^@\s]+\.[^@\s]+',
-                                  );
-                                  if (!emailReg.hasMatch(v.trim())) {
-                                    return 'Enter a valid email';
-                                  }
-                                  return null;
-                                },
-                              ),
-
-                              Gap(12),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Password',
-                                    style: theme.textTheme.bodyLarge?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: const Size(50, 24),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: Text(
-                                      'Forgot password?',
-                                      style: TextStyle(
-                                        color: theme.colorScheme.primary,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Gap(8),
-                              TextFormField(
-                                controller: _passwordController,
-                                obscureText: _obscure,
-                                decoration: InputDecoration(
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.0,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(28.0),
-                                  ),
-                                  fillColor:
-                                      theme.colorScheme.secondaryContainer,
-                                  filled: true,
-                                  suffixIcon: IconButton(
-                                    onPressed: () =>
-                                        setState(() => _obscure = !_obscure),
-                                    icon: Icon(
-                                      _obscure
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: theme.colorScheme.onSurface
-                                          .withValues(alpha: 0.6),
-                                    ),
+                        FocusTraversalGroup(
+                          policy: OrderedTraversalPolicy(),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Email',
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                validator: (v) {
-                                  if (v == null || v.isEmpty) {
-                                    return 'Please enter your password';
-                                  }
-                                  if (v.length < 8) {
-                                    return 'Password must be at least 8 characters';
-                                  }
-                                  return null;
-                                },
-                              ),
+                                Gap(12),
 
-                              Gap(20),
-                              SizedBox(
-                                height: 52,
-                                child: ElevatedButton(
-                                  onPressed: _isLoading ? null : _submit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: theme.colorScheme.primary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(32),
-                                    ),
-                                    elevation: 0,
-                                  ),
-                                  child: _isLoading
-                                      ? SizedBox(
-                                          height: 22,
-                                          width: 22,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.5,
-                                            color: theme.colorScheme.secondary,
-                                          ),
-                                        )
-                                      : Text(
-                                          'Sign in',
-                                          style: theme.textTheme.labelLarge
-                                              ?.copyWith(
-                                                color:
-                                                    theme.colorScheme.onPrimary,
-                                                fontSize: 16,
-                                              ),
+                                FocusTraversalOrder(
+                                  order: const NumericFocusOrder(1),
+                                  child: TextFormField(
+                                    controller: _emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 0.0,
                                         ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          28.0,
+                                        ),
+                                      ),
+                                      fillColor:
+                                          theme.colorScheme.secondaryContainer,
+                                      filled: true,
+                                      hintText: 'you@example.com',
+                                    ),
+                                    validator: (v) {
+                                      if (v == null || v.trim().isEmpty) {
+                                        return 'Please enter your email';
+                                      }
+                                      final emailReg = RegExp(
+                                        r'^[^@\s]+@[^@\s]+\.[^@\s]+',
+                                      );
+                                      if (!emailReg.hasMatch(v.trim())) {
+                                        return 'Enter a valid email';
+                                      }
+                                      return null;
+                                    },
+                                  ),
                                 ),
-                              ),
-                              Gap(18),
-                              Center(
-                                child: Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
+
+                                Gap(12),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "Don't have an account?",
-                                      style: TextStyle(
-                                        color: theme.textTheme.bodySmall!.color!
-                                            .withValues(alpha: 0.8),
-                                      ),
+                                      'Password',
+                                      style: theme.textTheme.bodyLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: Text(
-                                        'Create one',
-                                        style: TextStyle(
-                                          color: theme.colorScheme.primary,
+                                    FocusTraversalOrder(
+                                      order: const NumericFocusOrder(4),
+                                      child: TextButton(
+                                        onPressed: () {},
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: const Size(50, 24),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                        child: Text(
+                                          'Forgot password?',
+                                          style: TextStyle(
+                                            color: theme.colorScheme.primary,
+                                            fontSize: 13,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const Divider(height: 24),
-                              Center(
-                                child: TextButton.icon(
-                                  onPressed: _isLoading ? null : _changeServer,
-                                  icon: const Icon(
-                                    Icons.dns_outlined,
-                                    size: 16,
-                                  ),
-                                  label: Text(
-                                    _instance == null
-                                        ? (serverUrl ?? 'Change server')
-                                        : '${_instance!.instanceName}'
-                                              '${_instance!.version.display != null ? ' · ${_instance!.version.display}' : ''}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor:
-                                        theme.colorScheme.onSurfaceVariant,
-                                    textStyle: theme.textTheme.bodySmall,
+                                Gap(8),
+                                FocusTraversalOrder(
+                                  order: const NumericFocusOrder(2),
+                                  child: TextFormField(
+                                    controller: _passwordController,
+                                    obscureText: _obscure,
+                                    decoration: InputDecoration(
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 0.0,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          28.0,
+                                        ),
+                                      ),
+                                      fillColor:
+                                          theme.colorScheme.secondaryContainer,
+                                      filled: true,
+                                      suffixIcon: FocusTraversalOrder(
+                                        order: const NumericFocusOrder(5),
+                                        child: IconButton(
+                                          onPressed: () => setState(
+                                            () => _obscure = !_obscure,
+                                          ),
+                                          icon: Icon(
+                                            _obscure
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
+                                            color: theme.colorScheme.onSurface
+                                                .withValues(alpha: 0.6),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    validator: (v) {
+                                      if (v == null || v.isEmpty) {
+                                        return 'Please enter your password';
+                                      }
+                                      if (v.length < 8) {
+                                        return 'Password must be at least 8 characters';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
-                              ),
-                            ],
+
+                                Gap(20),
+                                SizedBox(
+                                  height: 52,
+                                  child: FocusTraversalOrder(
+                                    order: const NumericFocusOrder(3),
+                                    child: ElevatedButton(
+                                      onPressed: _isLoading ? null : _submit,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            theme.colorScheme.primary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            32,
+                                          ),
+                                        ),
+                                        elevation: 0,
+                                      ),
+                                      child: _isLoading
+                                          ? SizedBox(
+                                              height: 22,
+                                              width: 22,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2.5,
+                                                color:
+                                                    theme.colorScheme.secondary,
+                                              ),
+                                            )
+                                          : Text(
+                                              'Sign in',
+                                              style: theme.textTheme.labelLarge
+                                                  ?.copyWith(
+                                                    color: theme
+                                                        .colorScheme
+                                                        .onPrimary,
+                                                    fontSize: 16,
+                                                  ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Gap(18),
+                                Center(
+                                  child: Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Don't have an account?",
+                                        style: TextStyle(
+                                          color: theme
+                                              .textTheme
+                                              .bodySmall!
+                                              .color!
+                                              .withValues(alpha: 0.8),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text(
+                                          'Create one',
+                                          style: TextStyle(
+                                            color: theme.colorScheme.primary,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(height: 24),
+                                Center(
+                                  child: TextButton.icon(
+                                    onPressed: _isLoading
+                                        ? null
+                                        : _changeServer,
+                                    icon: const Icon(
+                                      Icons.dns_outlined,
+                                      size: 16,
+                                    ),
+                                    label: Text(
+                                      _instance == null
+                                          ? (serverUrl ?? 'Change server')
+                                          : '${_instance!.instanceName}'
+                                                '${_instance!.version.display != null ? ' · ${_instance!.version.display}' : ''}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          theme.colorScheme.onSurfaceVariant,
+                                      textStyle: theme.textTheme.bodySmall,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
