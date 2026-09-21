@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants.dart';
+import 'chopper_provider.dart';
 import 'storage_provider.dart';
 
 part 'auth_provider.g.dart';
@@ -21,8 +22,7 @@ class AuthToken extends _$AuthToken {
   }
 
   Future<void> clear() async {
-    // TODO: call the logout endpoint once the API implements it, so the token
-    // is revoked server side and not just dropped locally.
+    await ref.read(authServiceProvider).logout();
     await ref.read(secureStorageProvider).delete(key: kStoreApiBearerToken);
 
     state = const AsyncData(null);

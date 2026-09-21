@@ -27,4 +27,11 @@ final class _$AuthService extends AuthService {
         .send<LoginResponse, LoginResponse>($request);
     return $response.bodyOrThrow;
   }
+
+  @override
+  Future<Response<dynamic>> logout() {
+    final Uri $url = Uri.parse('/api/v1/auth/logout');
+    final Request $request = Request('POST', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
 }

@@ -11,4 +11,7 @@ abstract class AuthService extends ChopperService {
 
   @POST(path: '/login')
   Future<LoginResponse> login(@Body() LoginRequest body);
+
+  @POST(path: '/logout')
+  Future<Response> logout();
 }
