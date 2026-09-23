@@ -12,6 +12,7 @@ import '../../shared/providers/server_url_provider.dart';
 import '../../shared/providers/theme_mode_provider.dart';
 import '../../shared/utils/theme_mode_utils.dart';
 import '../categories/categories_page.dart';
+import 'app_information_page.dart';
 import 'components/settings_section_card.dart';
 import 'components/settings_section_label.dart';
 import 'components/settings_tile.dart';
@@ -193,22 +194,35 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               const Gap(32),
               Center(
-                child: FutureBuilder(
-                  future: futurePackageInfo,
-                  builder: (context, asyncSnapshot) {
-                    var textStyle = Theme.of(context).textTheme.bodySmall
-                        ?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                        );
-                    if (!asyncSnapshot.hasData) {
-                      return Text('Wiwit', style: textStyle);
-                    }
-                    var appVersion = asyncSnapshot.data?.version;
-                    var appName = asyncSnapshot.data?.appName;
-                    return Text('$appName v$appVersion', style: textStyle);
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8.0),
+                  onLongPress: () {
+                    // opens app info page
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => AppInformationPage()),
+                    );
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder(
+                      future: futurePackageInfo,
+                      builder: (context, asyncSnapshot) {
+                        var textStyle = Theme.of(context).textTheme.bodySmall
+                            ?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant
+                                  .withValues(alpha: 0.7),
+                            );
+                        if (!asyncSnapshot.hasData) {
+                          return Text('Wiwit', style: textStyle);
+                        }
+                        var appVersion = asyncSnapshot.data?.version;
+                        var appName = asyncSnapshot.data?.appName;
+                        return Text('$appName v$appVersion', style: textStyle);
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],
