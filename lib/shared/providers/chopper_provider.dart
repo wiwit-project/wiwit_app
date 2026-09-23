@@ -59,8 +59,12 @@ ChopperClient chopperClient(Ref ref) {
     converter: converter,
     errorConverter: converter,
     interceptors: [
-      AuthInterceptor(() => ref.read(authTokenProvider.future)),
       const ProblemDetailsInterceptor(),
+      AuthInterceptor(
+        readToken: () => ref.read(authTokenProvider.future),
+        onUnauthorized: (token) =>
+            ref.read(authTokenProvider.notifier).clearTokenIfMatches(token),
+      ),
     ],
   );
 

@@ -36,7 +36,7 @@ final class AuthTokenProvider
   AuthToken create() => AuthToken();
 }
 
-String _$authTokenHash() => r'503eae5b9ce06c1a42644dc426a637079464aaed';
+String _$authTokenHash() => r'980d8e50f9d47da81764eabd2a57821e2ac6fc83';
 
 /// The bearer token for the current session, or `null` when signed out.
 

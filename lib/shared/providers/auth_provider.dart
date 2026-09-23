@@ -27,6 +27,14 @@ class AuthToken extends _$AuthToken {
 
     state = const AsyncData(null);
   }
+
+  /// Discards an expired session
+  Future<void> clearTokenIfMatches(String token) async {
+    if (state.value != token) return;
+
+    await ref.read(secureStorageProvider).delete(key: kStoreApiBearerToken);
+    if (state.value == token) state = const AsyncData(null);
+  }
 }
 
 @Riverpod(keepAlive: true)
