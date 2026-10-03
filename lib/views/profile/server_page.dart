@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class _ServerPageState extends ConsumerState<ServerPage> {
 
   Future<void> _loadInstance() async {
     setState(() {
-      _status = _InstanceStatus.loading;
+      _status = .loading;
       _errorMessage = null;
     });
 
@@ -60,13 +61,13 @@ class _ServerPageState extends ConsumerState<ServerPage> {
 
     setState(() {
       if (result.data == null) {
-        _status = _InstanceStatus.error;
+        _status = .error;
         _errorMessage = result.error;
         return;
       }
 
       _instance = result.data;
-      _status = _InstanceStatus.ready;
+      _status = .ready;
     });
   }
 
@@ -150,33 +151,54 @@ class _ServerPageState extends ConsumerState<ServerPage> {
     );
   }
 
-  Widget _buildVersionSection(Version version) {
+  Widget _buildVersionSection(Version? version) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final release = version.display ?? version.releaseTag;
-    final commitSha = version.commitSha;
-    final shortSha = commitSha.substring(0, _shortShaLength);
+    final release = version?.display ?? version?.releaseTag;
+    final commitSha = version?.commitSha;
+    final shortSha = commitSha == null
+        ? ''
+        : commitSha.substring(
+            0,
+            commitSha.length < _shortShaLength
+                ? commitSha.length
+                : _shortShaLength,
+          );
+    final repositoryUrl = version?.repositoryUrl;
 
     final rows = <Widget>[
-      if (release != null) _DetailRow(label: 'Release', value: release),
-      if (version.refName != null)
-        _DetailRow(label: 'Ref', value: version.refName!),
+      _DetailRow(label: 'Release', value: release ?? ''),
+      _DetailRow(label: 'Ref', value: version?.refName ?? ''),
       _DetailRow(
         label: 'Commit',
         value: shortSha,
-        onCopy: () => _copy(value: commitSha, label: 'Commit'),
+        onCopy: commitSha == null
+            ? null
+            : () => _copy(value: commitSha, label: 'Commit'),
       ),
       _DetailRow(
         label: 'Repository',
-        value: version.repositoryUrl,
-        onCopy: () => _copy(value: version.repositoryUrl, label: 'Repository'),
+        value: repositoryUrl ?? '',
+        onCopy: repositoryUrl == null
+            ? null
+            : () => _copy(value: repositoryUrl, label: 'Repository'),
       ),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SettingsSectionLabel('Version'),
+        Row(
+          children: [
+            const SettingsSectionLabel('Version'),
+            const Gap(8),
+            AnimatedOpacity(
+              opacity: _status == .loading ? 1 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: const CupertinoActivityIndicator(radius: 7),
+            ),
+          ],
+        ),
         const Gap(8),
         SettingsSectionCard(
           child: Column(
@@ -230,12 +252,9 @@ class _ServerPageState extends ConsumerState<ServerPage> {
 
   Widget _buildBody() {
     return switch (_status) {
-      _InstanceStatus.loading => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 32),
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      _InstanceStatus.error => _buildErrorCard(),
-      _InstanceStatus.ready => _buildVersionSection(_instance!.version),
+      .loading => _buildVersionSection(null),
+      .error => _buildErrorCard(),
+      .ready => _buildVersionSection(_instance!.version),
     };
   }
 
