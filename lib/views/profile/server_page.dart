@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../shared/components/confirm_dialog.dart';
+import '../../shared/components/header_text.dart';
 import '../../shared/models/wiwit_api/instance/instance_response.dart';
 import '../../shared/models/wiwit_api/problem_details.dart';
 import '../../shared/providers/auth_provider.dart';
@@ -277,12 +278,7 @@ class _ServerPageState extends ConsumerState<ServerPage> {
                     tooltip: 'Back',
                   ),
                   const Gap(4),
-                  Text(
-                    'Server',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  const AppBarText('Server'),
                 ],
               ),
             ),

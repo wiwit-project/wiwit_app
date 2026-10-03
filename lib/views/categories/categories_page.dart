@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../shared/components/header_text.dart';
 import '../../shared/models/wiwit_api/categories/category_response.dart';
 import '../../shared/models/wiwit_api/categories/update_category_request.dart';
 import '../../shared/models/wiwit_api/enums.dart';
@@ -213,14 +214,7 @@ class _CategoriesPageState extends ConsumerState<CategoriesPage> {
           tooltip: 'Back',
         ),
         const Gap(4),
-        Expanded(
-          child: Text(
-            'Categories',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: .w700),
-          ),
-        ),
+        const Expanded(child: AppBarText('Categories')),
         IconButton(
           onPressed: _categories.isEmpty
               ? null

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../shared/components/header_text.dart';
 import '../../../shared/components/profile_avatar_widget.dart';
 import '../../../shared/constants.dart';
 import '../../../shared/models/wiwit_api/profile/profile_response.dart';
@@ -34,10 +35,9 @@ class HomeHeader extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   children: [...previousChildren, ?currentChild],
                 ),
-                child: Text(
+                child: AppBarText(
                   profileDetail?.name ?? '',
                   key: ValueKey(profileDetail),
-                  style: TextStyle(fontSize: 24, fontWeight: .bold),
                 ),
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../shared/components/header_text.dart';
 import 'components/settings_section_card.dart';
 import 'components/settings_section_label.dart';
 import 'components/settings_tile.dart';
@@ -39,14 +40,7 @@ class AppInformationPage extends StatelessWidget {
                         tooltip: 'Back',
                       ),
                       const Gap(4),
-                      Expanded(
-                        child: Text(
-                          'App information',
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: .w700,
-                          ),
-                        ),
-                      ),
+                      const Expanded(child: AppBarText('App information')),
                     ],
                   ),
                   const Gap(36),

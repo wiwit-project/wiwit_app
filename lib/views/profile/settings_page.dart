@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../shared/components/confirm_dialog.dart';
+import '../../shared/components/header_text.dart';
 import '../../shared/components/profile_avatar_widget.dart';
 import '../../shared/constants.dart';
 import '../../shared/models/wiwit_api/profile/profile_response.dart';
@@ -76,12 +77,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     tooltip: 'Back',
                   ),
                   const Gap(4),
-                  Text(
-                    'Settings',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  const AppBarText('Settings'),
                 ],
               ),
               const Gap(8),
