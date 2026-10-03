@@ -48,6 +48,25 @@ void main() {
     });
   });
 
+  group('time format', () {
+    test('uses a padded 24 hour clock', () {
+      expect(formatTime(DateTime(2026, 10, 3, 9, 5)), '09:05');
+      expect(formatTime(DateTime(2026, 10, 3, 14, 32)), '14:32');
+      expect(formatTime(DateTime(2026, 10, 3, 0, 0)), '00:00');
+    });
+
+    test('puts the time after the date', () {
+      expect(formatDateTime(DateTime(2020, 10, 3, 14, 32)), '03/10/2020 14:32');
+    });
+
+    test('names today instead of repeating the date', () {
+      final now = DateTime.now();
+      final at = DateTime(now.year, now.month, now.day, 14, 32);
+
+      expect(formatDateTime(at), 'Today 14:32');
+    });
+  });
+
   group('date format', () {
     test('pads day and month', () {
       expect(formatDate(DateTime(2026, 7, 9)), '09/07/2026');

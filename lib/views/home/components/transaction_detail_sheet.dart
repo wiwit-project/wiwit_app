@@ -130,11 +130,20 @@ class _TransactionDetailSheetState
     // timestamps have actually drifted apart.
     final wasEdited = updatedAt.difference(createdAt).inMinutes >= 1;
 
+    final added = 'Added ${formatDateTime(createdAt)}';
+
     return Text(
-      'Added ${formatDate(createdAt)}'
-      '${wasEdited ? '  ·  Edited ${formatDate(updatedAt)}' : ''}',
+      wasEdited
+          ? '$added  ·  Edited ${_formatEditedAt(createdAt, updatedAt)}'
+          : added,
       style: TextStyle(fontSize: 12, color: colorScheme.outline),
     );
+  }
+
+  String _formatEditedAt(DateTime createdAt, DateTime updatedAt) {
+    if (DateUtils.isSameDay(createdAt, updatedAt)) return formatTime(updatedAt);
+
+    return formatRelativeDate(updatedAt);
   }
 
   Widget _buildActions(BuildContext context, {required bool isIncome}) {
