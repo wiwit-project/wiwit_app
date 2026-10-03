@@ -10,6 +10,7 @@ import '../../shared/models/wiwit_api/transactions/transaction_response.dart';
 import '../../shared/providers/chopper_provider.dart';
 import '../../shared/providers/overview_provider.dart';
 import '../../shared/utils/format_utils.dart';
+import '../transactions/transactions_page.dart';
 import 'components/finance_overview_widget.dart';
 import 'components/home_header.dart';
 import 'components/transaction_detail_sheet.dart';
@@ -341,6 +342,24 @@ class _HomeState extends ConsumerState<Home> with WidgetsBindingObserver {
                           style: TextStyle(fontSize: 11),
                         ),
                       ),
+                    Spacer(),
+                    // The see all transaction list button
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        visualDensity: .compact,
+                        // remove the extra padding to the right but we want to keep padding to
+                        // the left so that the ink is not hitting the text
+                        padding: EdgeInsets.only(left: 4),
+                      ),
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionsPage(),
+                        ),
+                      ),
+                      iconAlignment: .end,
+                      icon: Icon(Icons.chevron_right_outlined),
+                      label: Text('See all'),
+                    ),
                   ],
                 ),
                 const Gap(12),
