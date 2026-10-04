@@ -293,7 +293,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         keyboardDismissBehavior: .onDrag,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         itemCount: transactions.length + 1,
         itemBuilder: (context, index) {
           if (index == transactions.length) {
@@ -329,11 +329,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: Column(
                   crossAxisAlignment: .stretch,
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: 8),
-                    _buildFilters(),
-                  ],
+                  children: [_buildHeader(), _buildFilters()],
                 ),
               ),
               Expanded(
