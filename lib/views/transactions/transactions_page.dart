@@ -283,7 +283,9 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   }
 
   Widget _buildList() {
-    final transactions = _transactions.visibleTransactions;
+    // TODO: Simplify this when the API support sorting
+    final transactions = _transactions.visibleTransactions
+      ..sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
     // Fill a short viewport after each page or search update. This also keeps
     // paging when a local search has no matches in the pages loaded so far.
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadNearEnd());
@@ -303,10 +305,36 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
             );
           }
           final transaction = transactions[index];
-          return TransactionTile(
+          final date = transaction.transactionDate;
+          final previousDate = index == 0
+              ? null
+              : transactions[index - 1].transactionDate;
+          final startsMonth =
+              previousDate == null ||
+              date.year != previousDate.year ||
+              date.month != previousDate.month;
+          return Column(
             key: ValueKey(transaction.id),
-            transaction: transaction,
-            onTap: () => _showDetail(transaction),
+            crossAxisAlignment: .stretch,
+            children: [
+              if (startsMonth)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(4, index == 0 ? 8 : 24, 4, 8),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      formatMonthYear(date),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              TransactionTile(
+                transaction: transaction,
+                onTap: () => _showDetail(transaction),
+              ),
+            ],
           );
         },
       ),
