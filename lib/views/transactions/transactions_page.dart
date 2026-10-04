@@ -248,6 +248,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   }
 
   Widget _buildFooter(bool isEmpty) {
+    if (_transactions.isRefreshing) return const SizedBox.shrink();
     final error = _transactions.error;
     if (error != null) {
       return Column(
@@ -290,7 +291,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     // paging when a local search has no matches in the pages loaded so far.
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadNearEnd());
     return RefreshIndicator(
-      onRefresh: _transactions.refresh,
+      onRefresh: () => _transactions.refresh(keepVisible: true),
       child: ListView.builder(
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),

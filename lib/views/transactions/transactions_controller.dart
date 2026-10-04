@@ -28,22 +28,26 @@ class TransactionsController extends ChangeNotifier {
   /// Trimmed, lowercase search text used to filter loaded transactions locally.
   var _query = '';
 
-  /// Category ID sent to the API; null includes all categories.
+  /// Specifies category filters.
   int? _categoryId;
 
-  /// Transaction date range sent to the API; null includes all dates.
+  /// Specifies period duration.
   DateTimeRange? _dateRange;
 
   /// Whether a page request is in progress, preventing duplicate requests.
   bool _isLoading = false;
 
+  /// Keeps the current list visible refresh runs.
+  bool _isRefreshing = false;
+
   /// Whether the API pagination metadata indicates more pages are available.
   bool _hasMore = true;
 
-  /// The latest page request's error message, cleared when retrying or refreshing.
+  /// The latest page request's error message.
   String? _error;
 
   bool get isLoading => _isLoading;
+  bool get isRefreshing => _isRefreshing;
   bool get hasMore => _hasMore;
   String? get error => _error;
   bool get isSearching => _query.isNotEmpty;
@@ -74,13 +78,15 @@ class TransactionsController extends ChangeNotifier {
     return refresh();
   }
 
-  Future<void> refresh() {
+  Future<void> refresh({bool keepVisible = false}) {
+    if (_disposed) return Future.value();
     // A filter change or refresh supersedes any request already in flight.
     _generation++;
     _nextPage = 1;
-    _transactions.clear();
+    if (!keepVisible) _transactions.clear();
     _hasMore = true;
     _isLoading = false;
+    _isRefreshing = keepVisible;
     _error = null;
     return loadNextPage();
   }
@@ -103,6 +109,8 @@ class TransactionsController extends ChangeNotifier {
       );
       if (_disposed || generation != _generation) return;
 
+      // Replace only after a successful first page, including refresh retries.
+      if (_nextPage == 1) _transactions.clear();
       final ids = _transactions.map((transaction) => transaction.id).toSet();
       _transactions.addAll(
         result.data.where((transaction) => ids.add(transaction.id)),
@@ -119,6 +127,7 @@ class TransactionsController extends ChangeNotifier {
 
     if (_disposed || generation != _generation) return;
     _isLoading = false;
+    _isRefreshing = false;
     notifyListeners();
   }
 
