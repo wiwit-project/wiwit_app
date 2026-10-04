@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../shared/components/search_text_field.dart';
 import '../../../shared/models/wiwit_api/categories/add_category_request.dart';
 import '../../../shared/models/wiwit_api/categories/category_response.dart';
 import '../../../shared/models/wiwit_api/problem_details.dart';
@@ -249,34 +250,11 @@ class _CategoryPickerSheetState extends ConsumerState<CategoryPickerSheet> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: TextField(
+              child: SearchTextField(
                 controller: _searchController,
                 enabled: !_isCreating,
-                textCapitalization: .sentences,
-                textInputAction: .search,
+                hintText: 'Search or create',
                 onChanged: (value) => setState(() => _query = value.trim()),
-                decoration: InputDecoration(
-                  hintText: 'Search or create',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _query.isEmpty
-                      ? null
-                      : IconButton(
-                          onPressed: _isCreating
-                              ? null
-                              : () {
-                                  _searchController.clear();
-                                  setState(() => _query = '');
-                                },
-                          icon: const Icon(Icons.close),
-                          tooltip: 'Clear search',
-                        ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0),
-                  ),
-                  border: OutlineInputBorder(borderRadius: .circular(28)),
-                  fillColor: colorScheme.secondaryContainer,
-                  filled: true,
-                ),
               ),
             ),
             const Gap(12),
