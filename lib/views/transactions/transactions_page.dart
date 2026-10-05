@@ -173,7 +173,7 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final now = DateTime.now();
     final range = await showDateRangePicker(
       context: context,
-      firstDate: DateTime(1900),
+      firstDate: DateTime(2000),
       lastDate: DateTime(now.year + 10, 12, 31),
       initialDateRange: _dateRange,
       helpText: 'Filter by transaction date',
@@ -214,7 +214,11 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       runSpacing: 4,
       children: [
         InputChip(
-          avatar: const Icon(Icons.label_outline, size: 18),
+          showCheckmark: false,
+          avatar: Icon(
+            _category != null ? Icons.label : Icons.label_outline,
+            size: 18,
+          ),
           label: Text(_category?.name ?? 'All categories'),
           selected: _category != null,
           onPressed: _chooseCategory,
@@ -227,7 +231,11 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           deleteButtonTooltipMessage: 'Clear category filter',
         ),
         InputChip(
-          avatar: const Icon(Icons.date_range_outlined, size: 18),
+          showCheckmark: false,
+          avatar: Icon(
+            _dateRange != null ? Icons.date_range : Icons.date_range_outlined,
+            size: 18,
+          ),
           label: Text(
             _dateRange == null
                 ? 'All dates'
