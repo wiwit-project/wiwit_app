@@ -24,8 +24,8 @@ final class _$TransactionService extends TransactionService {
     int? perPage,
     String? type,
     int? categoryId,
-    String? dateFrom,
-    String? dateTo,
+    DateTime? dateFrom,
+    DateTime? dateTo,
   }) async {
     final Uri $url = Uri.parse('/api/v1/transactions');
     final Map<String, dynamic> $params = <String, dynamic>{
@@ -41,6 +41,7 @@ final class _$TransactionService extends TransactionService {
       $url,
       client.baseUrl,
       parameters: $params,
+      dateFormat: DateFormat.date,
     );
     final Response<TransactionListResponse> $response = await client
         .send<TransactionListResponse, TransactionListResponse>($request);

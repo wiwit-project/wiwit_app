@@ -11,14 +11,14 @@ abstract class TransactionService extends ChopperService {
   static TransactionService create([ChopperClient? client]) =>
       _$TransactionService(client);
 
-  @GET()
+  @GET(dateFormat: .date)
   Future<TransactionListResponse> getTransactions({
     @Query() int? page,
     @Query('per_page') int? perPage,
     @Query() String? type,
     @Query('category_id') int? categoryId,
-    @Query('date_from') String? dateFrom,
-    @Query('date_to') String? dateTo,
+    @Query('date_from') DateTime? dateFrom,
+    @Query('date_to') DateTime? dateTo,
   });
 
   @POST()
