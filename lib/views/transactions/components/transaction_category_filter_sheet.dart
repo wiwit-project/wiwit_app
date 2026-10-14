@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../shared/components/search_text_field.dart';
 import '../../../shared/models/wiwit_api/categories/category_response.dart';
+import '../../../shared/models/wiwit_api/enums.dart';
 import '../../../shared/providers/chopper_provider.dart';
 
 /// Includes inactive categories used by historical records.
@@ -20,6 +21,7 @@ class _TransactionCategoryFilterSheetState
   final _searchController = TextEditingController();
   late Future<List<CategoryResponse>> _categories;
   var _query = '';
+  var _sort = CategorySort.mostUsed;
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _TransactionCategoryFilterSheetState
         page: page,
         perPage: 100,
         showInactive: true,
-        sort: .name,
+        sort: .mostUsed,
       );
       categories.addAll(result.data);
       if (!mounted ||
@@ -69,9 +71,42 @@ class _TransactionCategoryFilterSheetState
           mainAxisSize: .min,
           crossAxisAlignment: .stretch,
           children: [
-            Text(
-              'Filter by category',
-              style: Theme.of(context).textTheme.titleMedium,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Filter by category',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<CategorySort>(
+                    value: _sort,
+                    isDense: true,
+                    iconSize: 18,
+                    // padding: EdgeInsets.zero,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    hint: const Text('Sort by'),
+                    items: const [
+                      DropdownMenuItem(
+                        value: .mostUsed,
+                        child: Text('Most used'),
+                      ),
+                      DropdownMenuItem(
+                        value: .name,
+                        child: Text('Alphabetical'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null || value == _sort) return;
+                      setState(() {
+                        _sort = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             SearchTextField(
@@ -113,6 +148,19 @@ class _TransactionCategoryFilterSheetState
                             category.name.toLowerCase().contains(_query),
                       )
                       .toList(growable: false);
+                  categories.sort((a, b) {
+                    if (_sort == .mostUsed) {
+                      final countOrder = b.transactionsCount.compareTo(
+                        a.transactionsCount,
+                      );
+                      if (countOrder != 0) return countOrder;
+                    }
+                    final nameOrder = a.name.toLowerCase().compareTo(
+                      b.name.toLowerCase(),
+                    );
+                    if (nameOrder != 0) return nameOrder;
+                    return a.id.compareTo(b.id);
+                  });
                   return ListView.builder(
                     shrinkWrap: true,
                     padding: const EdgeInsets.only(bottom: 16),
