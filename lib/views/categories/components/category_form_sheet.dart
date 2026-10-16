@@ -9,21 +9,6 @@ import '../../../shared/models/wiwit_api/categories/update_category_request.dart
 import '../../../shared/models/wiwit_api/problem_details.dart';
 import '../../../shared/providers/chopper_provider.dart';
 
-/// Opens the category form.
-Future<void> showCategoryFormSheet({
-  required BuildContext context,
-  required VoidCallback onSaved,
-  CategoryResponse? category,
-}) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: false,
-    enableDrag: false,
-    builder: (_) => CategoryFormSheet(category: category, onSaved: onSaved),
-  );
-}
-
 /// The UI for adding or editing a [category] record
 class CategoryFormSheet extends ConsumerStatefulWidget {
   const CategoryFormSheet({super.key, required this.onSaved, this.category});
@@ -42,6 +27,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   late bool _isActive;
   var _isSaving = false;
@@ -55,11 +41,13 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
     final category = widget.category;
     _isActive = category?.isActive ?? true;
     _nameController.text = category?.name ?? '';
+    _descriptionController.text = category?.description ?? '';
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -67,25 +55,38 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
   bool get _hasUnsavedChanges {
     final category = widget.category;
     final name = _nameController.text.trim();
+    final description = _descriptionController.text.trim();
 
-    if (category == null) return name.isNotEmpty;
+    if (category == null) return name.isNotEmpty || description.isNotEmpty;
 
-    return name != category.name || _isActive != category.isActive;
+    return name != category.name ||
+        description != (category.description ?? '').trim() ||
+        _isActive != category.isActive;
   }
 
   /// Creates or updates
   Future<void> _submit(String name) async {
     final service = ref.read(categoryServiceProvider);
     final category = widget.category;
+    final description = _descriptionController.text.trim();
 
     if (category == null) {
-      await service.createCategory(AddCategoryRequest(name: name));
+      await service.createCategory(
+        AddCategoryRequest(
+          name: name,
+          description: description.isEmpty ? null : description,
+        ),
+      );
       return;
     }
 
     await service.updateCategory(
       category.id,
-      UpdateCategoryRequest(name: name, isActive: _isActive),
+      UpdateCategoryRequest(
+        name: name,
+        description: description,
+        isActive: _isActive,
+      ),
     );
   }
 
@@ -313,13 +314,27 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                     enabled: !_isSaving,
                     autofocus: !_isEditing,
                     textCapitalization: .sentences,
-                    textInputAction: .done,
+                    textInputAction: .next,
                     maxLength: _maxNameLength,
-                    onFieldSubmitted: (_) => _save(),
                     decoration: inputDecoration,
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'Enter a name.'
                         : null,
+                  ),
+                  const Gap(12),
+                  TextFormField(
+                    controller: _descriptionController,
+                    enabled: !_isSaving,
+                    textCapitalization: .sentences,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: .newline,
+                    minLines: 2,
+                    maxLines: 4,
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Description (optional)',
+                      hintText: 'What is this category for?',
+                      alignLabelWithHint: true,
+                    ),
                   ),
                   // Only an existing category can be hidden.
                   if (_isEditing) ...[
@@ -335,4 +350,19 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
       ),
     );
   }
+}
+
+/// Opens the category form.
+Future<void> showCategoryFormSheet({
+  required BuildContext context,
+  required VoidCallback onSaved,
+  CategoryResponse? category,
+}) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: false,
+    enableDrag: false,
+    builder: (_) => CategoryFormSheet(category: category, onSaved: onSaved),
+  );
 }

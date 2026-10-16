@@ -8,7 +8,9 @@ void main() {
         {
           'id': 1,
           'name': 'Food',
+          'description': 'Groceries and meals',
           'is_active': true,
+          'transactions_count': 0,
           'created_at': '2026-07-20T14:36:15.000000Z',
           'updated_at': '2026-07-20T14:36:15.000000Z',
           'links': {},
@@ -19,6 +21,7 @@ void main() {
     });
 
     expect(response.data.single.name, 'Food');
+    expect(response.data.single.description, 'Groceries and meals');
     expect(response.meta.page, 1);
     expect(response.meta.perPage, 20);
     expect(response.meta.total, 1);

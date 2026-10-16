@@ -89,14 +89,16 @@ class _CategoriesPageState extends ConsumerState<CategoriesPage> {
     });
   }
 
+  // Search within the categories name and description.
   List<CategoryResponse> get _visibleCategories {
     final query = _query.toLowerCase();
 
     if (query.isEmpty) return _categories;
 
-    return _categories
-        .where((category) => category.name.toLowerCase().contains(query))
-        .toList();
+    return _categories.where((category) {
+      return category.name.toLowerCase().contains(query) ||
+          category.description?.toLowerCase().contains(query) == true;
+    }).toList();
   }
 
   void _showMessage(String message, {VoidCallback? onUndo}) {

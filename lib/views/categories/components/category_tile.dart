@@ -22,6 +22,7 @@ class CategoryTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isActive = category.isActive;
+    final description = category.description;
 
     // Differentiate style between active and hidden categories
     final foreground = isActive
@@ -53,14 +54,14 @@ class CategoryTile extends StatelessWidget {
           color: foreground,
         ),
       ),
-      subtitle: isActive
+      subtitle: description == null
           ? null
           : Text(
-              'Hidden from new transactions',
+              description,
               maxLines: 1,
               overflow: .ellipsis,
               style: textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
       trailing: Switch(value: isActive, onChanged: onActiveChanged),

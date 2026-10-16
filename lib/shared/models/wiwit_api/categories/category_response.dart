@@ -7,6 +7,7 @@ part 'category_response.g.dart';
 class CategoryResponse {
   final int id;
   final String name;
+  final String? description;
   @JsonKey(name: 'is_active')
   final bool isActive;
   @JsonKey(name: 'transactions_count')
@@ -19,6 +20,7 @@ class CategoryResponse {
   CategoryResponse({
     required this.id,
     required this.name,
+    required this.description,
     required this.isActive,
     required this.transactionsCount,
     required this.createdAt,
@@ -30,9 +32,14 @@ class CategoryResponse {
 
   Map<String, dynamic> toJson() => _$CategoryResponseToJson(this);
 
-  CategoryResponse copyWith({String? name, bool? isActive}) => CategoryResponse(
+  CategoryResponse copyWith({
+    String? name,
+    String? description,
+    bool? isActive,
+  }) => CategoryResponse(
     id: id,
     name: name ?? this.name,
+    description: description ?? this.description,
     isActive: isActive ?? this.isActive,
     transactionsCount: transactionsCount,
     createdAt: createdAt,
@@ -41,6 +48,6 @@ class CategoryResponse {
 
   @override
   String toString() {
-    return 'CategoryResponse(id: $id, name: $name, isActive: $isActive)';
+    return 'CategoryResponse(id: $id, name: $name, description: $description, isActive: $isActive)';
   }
 }

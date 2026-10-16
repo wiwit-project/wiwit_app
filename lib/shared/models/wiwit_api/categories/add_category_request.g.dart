@@ -9,8 +9,13 @@ part of 'add_category_request.dart';
 AddCategoryRequest _$AddCategoryRequestFromJson(Map<String, dynamic> json) =>
     AddCategoryRequest(
       name: json['name'] as String,
+      description: json['description'] as String?,
       isActive: json['is_active'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$AddCategoryRequestToJson(AddCategoryRequest instance) =>
-    <String, dynamic>{'name': instance.name, 'is_active': instance.isActive};
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'is_active': instance.isActive,
+    };
