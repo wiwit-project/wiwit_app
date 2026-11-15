@@ -56,19 +56,19 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: arm64-v8a artifact
-          path: ${{ env.APK_DIR }}/wiwit-v*-arm64-v8a-release.apk
+          path: ${{ env.APK_DIR }}/*-arm64-v8a-release.apk
 
       - name: Upload artifacts (armeabi-v7a)
         uses: actions/upload-artifact@v7.0.1
         with:
           name: armeabi-v7a artifact
-          path: ${{ env.APK_DIR }}/wiwit-v*-armeabi-v7a-release.apk
+          path: ${{ env.APK_DIR }}/*-armeabi-v7a-release.apk
 
       - name: Upload artifacts (x86_64)
         uses: actions/upload-artifact@v7.0.1
         with:
           name: x86_64 artifact
-          path: ${{ env.APK_DIR }}/wiwit-v*-x86_64-release.apk
+          path: ${{ env.APK_DIR }}/*-x86_64-release.apk
 
       - name: Write summary
         run: |
