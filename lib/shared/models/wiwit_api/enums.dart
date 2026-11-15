@@ -24,7 +24,7 @@ enum ProblemDetailType {
   @JsonValue("/problems/internal-server-error")
   internalServerError("/problems/internal-server-error");
 
-  const ProblemDetailType(this.value);
+  ProblemDetailType(this.value);
 
   /// The problem detail title from API
   final String value;
@@ -37,7 +37,7 @@ enum CategorySort {
   @JsonValue("most_used")
   mostUsed("most_used");
 
-  const CategorySort(this.value);
+  CategorySort(this.value);
 
   final String value;
 
