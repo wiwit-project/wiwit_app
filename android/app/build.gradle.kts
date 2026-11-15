@@ -52,14 +52,6 @@ android {
                 ?: signingConfigs.getByName("debug")
         }
     }
-
-    // Hook to rename the apk
-    applicationVariants.all {
-        outputs.all {
-            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            output.outputFileName = output.outputFileName.replace("app-", "wiwit-v${flutter.versionName}-")
-        }
-    }
 }
 
 kotlin {
