@@ -12,7 +12,6 @@ class TransactionResponse {
   final String amount;
   final TransactionCategoryResponse? category;
 
-  @JsonKey(defaultValue: <TransactionTagResponse>[])
   final List<TransactionTagResponse> tags;
   final String? notes;
   @JsonKey(name: 'transaction_date')

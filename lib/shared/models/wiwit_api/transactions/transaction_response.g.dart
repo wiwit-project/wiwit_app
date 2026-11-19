@@ -24,7 +24,7 @@ TransactionResponse _$TransactionResponseFromJson(Map<String, dynamic> json) =>
                     TransactionTagResponse.fromJson(e as Map<String, dynamic>),
               )
               .toList() ??
-          [],
+          const [],
       notes: json['notes'] as String?,
       transactionDate: DateTime.parse(json['transaction_date'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),

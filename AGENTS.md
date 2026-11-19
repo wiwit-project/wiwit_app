@@ -28,7 +28,7 @@ flutter analyze
 flutter test
 flutter test test/shared/utils/format_utils_test.dart
 flutter test --plain-name "parses category items"
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 flutter build apk --split-per-abi --release
 ```
 
