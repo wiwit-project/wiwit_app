@@ -52,7 +52,7 @@ final class ChopperClientProvider
   }
 }
 
-String _$chopperClientHash() => r'9f8b04bc2552c445cf3cf47cd4ea80e027477ddb';
+String _$chopperClientHash() => r'19070add673e14feae24544a6158f9c808843061';
 
 @ProviderFor(authService)
 final authServiceProvider = AuthServiceProvider._();
@@ -182,6 +182,47 @@ final class CategoryServiceProvider
 }
 
 String _$categoryServiceHash() => r'0f30b97b69cec31de8f8ff6d1aeebeb897bf3c93';
+
+@ProviderFor(tagService)
+final tagServiceProvider = TagServiceProvider._();
+
+final class TagServiceProvider
+    extends $FunctionalProvider<TagService, TagService, TagService>
+    with $Provider<TagService> {
+  TagServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: _neverRetry,
+        name: r'tagServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tagServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<TagService> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  TagService create(Ref ref) {
+    return tagService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TagService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TagService>(value),
+    );
+  }
+}
+
+String _$tagServiceHash() => r'9dc9533ed99a89e51cb6ad25715337c043f94039';
 
 @ProviderFor(transactionService)
 final transactionServiceProvider = TransactionServiceProvider._();

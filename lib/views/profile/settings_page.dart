@@ -13,6 +13,7 @@ import '../../shared/providers/server_url_provider.dart';
 import '../../shared/providers/theme_mode_provider.dart';
 import '../../shared/utils/theme_mode_utils.dart';
 import '../categories/categories_page.dart';
+import '../tags/tags_page.dart';
 import 'app_information_page.dart';
 import 'components/settings_section_card.dart';
 import 'components/settings_section_label.dart';
@@ -110,16 +111,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       trailing: Icon(
                         Icons.chevron_right,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.7),
                       ),
                     ),
                     Divider(
                       height: 1,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.2),
                     ),
                     ListTile(
                       onTap: () => Navigator.of(context).push(
@@ -144,9 +143,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       trailing: Icon(
                         Icons.chevron_right,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -156,13 +154,34 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               const SettingsSectionLabel('Data'),
               const Gap(8),
               SettingsSectionCard(
-                child: SettingsTile(
-                  icon: Icons.label_outline,
-                  title: 'Categories',
-                  subtitle: 'Manage categories',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const CategoriesPage()),
-                  ),
+                child: Column(
+                  children: [
+                    SettingsTile(
+                      icon: Icons.label_outline,
+                      title: 'Categories',
+                      subtitle: 'Manage categories',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const CategoriesPage(),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 1,
+                      indent: 16,
+                      endIndent: 16,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.2),
+                    ),
+                    SettingsTile(
+                      icon: Icons.sell_outlined,
+                      title: 'Tags',
+                      subtitle: 'Manage tags',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const TagsPage()),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const Gap(24),
