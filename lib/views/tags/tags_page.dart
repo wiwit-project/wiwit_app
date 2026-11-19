@@ -6,6 +6,7 @@ import '../../shared/components/header_text.dart';
 import '../../shared/models/wiwit_api/problem_details.dart';
 import '../../shared/models/wiwit_api/tags/tag_response.dart';
 import '../../shared/providers/chopper_provider.dart';
+import '../../shared/utils/tag_service_utils.dart';
 import '../profile/components/settings_section_card.dart';
 import 'components/tag_form_sheet.dart';
 import 'components/tag_row.dart';
@@ -20,8 +21,6 @@ class TagsPage extends ConsumerStatefulWidget {
 }
 
 class _TagsPageState extends ConsumerState<TagsPage> {
-  static const _perPage = 100;
-
   final _searchController = TextEditingController();
   final _tags = <TagResponse>[];
   var _status = _ListStatus.loading;
@@ -46,21 +45,9 @@ class _TagsPageState extends ConsumerState<TagsPage> {
     final version = ++_loadVersion;
 
     try {
-      final service = ref.read(tagServiceProvider);
-      final tags = <TagResponse>[];
-      var page = 1;
+      final tags = await ref.read(tagServiceProvider).getAllTags();
 
-      // Search must include tags beyond the API's first page.
-      while (true) {
-        final response = await service.getTags(page: page, perPage: _perPage);
-        if (!mounted || version != _loadVersion) return;
-
-        tags.addAll(response.data);
-        if (page >= response.meta.lastPage) break;
-        page++;
-      }
-
-      tags.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      if (!mounted || version != _loadVersion) return;
 
       setState(() {
         _tags
