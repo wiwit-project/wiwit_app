@@ -11,6 +11,8 @@ class TransactionResponse {
   final TransactionType type;
   final String amount;
   final TransactionCategoryResponse? category;
+
+  final List<TransactionTagResponse> tags;
   final String? notes;
   @JsonKey(name: 'transaction_date')
   final DateTime transactionDate;
@@ -25,6 +27,7 @@ class TransactionResponse {
     required this.type,
     required this.amount,
     required this.category,
+    this.tags = const [],
     required this.notes,
     required this.transactionDate,
     required this.createdAt,
@@ -38,7 +41,7 @@ class TransactionResponse {
 
   @override
   String toString() =>
-      'TransactionResponse(id: $id, title: $title, type: $type, amount: $amount, category: $category, notes: $notes, transactionDate: $transactionDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+      'TransactionResponse(id: $id, title: $title, type: $type, amount: $amount, category: $category, tags: $tags, notes: $notes, transactionDate: $transactionDate, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 @JsonSerializable()
@@ -58,4 +61,27 @@ class TransactionCategoryResponse {
       _$TransactionCategoryResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransactionCategoryResponseToJson(this);
+}
+
+@JsonSerializable()
+class TransactionTagResponse {
+  final int id;
+  final String name;
+  final String? description;
+  final String? color;
+
+  const TransactionTagResponse({
+    required this.id,
+    required this.name,
+    this.description,
+    this.color,
+  });
+
+  factory TransactionTagResponse.fromJson(Map<String, dynamic> json) =>
+      _$TransactionTagResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TransactionTagResponseToJson(this);
+
+  @override
+  String toString() => 'TransactionTagResponse(id: $id, name: $name)';
 }

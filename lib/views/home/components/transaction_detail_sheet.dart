@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../shared/components/confirm_dialog.dart';
+import '../../../shared/components/tag_badge.dart';
 import '../../../shared/models/wiwit_api/enums.dart';
 import '../../../shared/models/wiwit_api/problem_details.dart';
 import '../../../shared/models/wiwit_api/transactions/transaction_response.dart';
@@ -235,6 +236,17 @@ class _TransactionDetailSheetState
                   ),
                 ],
               ),
+              if (transaction.tags.isNotEmpty) ...[
+                const Gap(12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final tag in transaction.tags)
+                      TagBadge(name: tag.name, color: tag.color),
+                  ],
+                ),
+              ],
               if (notes.isNotEmpty) ...[
                 const Gap(14),
                 Text(

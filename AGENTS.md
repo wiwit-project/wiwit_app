@@ -28,7 +28,7 @@ flutter analyze
 flutter test
 flutter test test/shared/utils/format_utils_test.dart
 flutter test --plain-name "parses category items"
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 flutter build apk --split-per-abi --release
 ```
 
@@ -46,6 +46,7 @@ Format changed Dart files with `dart format <paths>`. After changing annotated m
 - Follow existing Dart dot-shorthand usage where the type is inferred, such as `brightness: .dark` and `fontWeight: .w600`.
 - Riverpod lints are configured as an analysis-server plugin in `analysis_options.yaml`.
 - Reuse existing UI components, themes, and feature organization when extending screens.
+- Use `Gap` from `package:gap` instead of `SizedBox` for spacing between widgets in rows, columns, and other flex layouts; keep `SizedBox` for sizing a widget or as an empty placeholder (`SizedBox.shrink()`).
 
 ## Validation and scope
 

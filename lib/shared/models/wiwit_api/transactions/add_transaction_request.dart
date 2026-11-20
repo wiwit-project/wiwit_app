@@ -12,6 +12,9 @@ class AddTransactionRequest {
   final TransactionType type;
   @JsonKey(name: 'category_id')
   final int? categoryId;
+
+  @JsonKey(name: 'tag_ids')
+  final List<int> tagIds;
   final String? notes;
   @JsonKey(name: 'transaction_date', toJson: _dateOnly)
   final DateTime transactionDate;
@@ -21,6 +24,7 @@ class AddTransactionRequest {
     required this.amount,
     required this.type,
     this.categoryId,
+    this.tagIds = const [],
     this.notes,
     required this.transactionDate,
   });

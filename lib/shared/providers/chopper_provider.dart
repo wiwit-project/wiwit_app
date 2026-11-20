@@ -7,6 +7,8 @@ import '../models/wiwit_api/categories/category_list_response.dart';
 import '../models/wiwit_api/categories/category_response.dart';
 import '../models/wiwit_api/instance/instance_response.dart';
 import '../models/wiwit_api/profile/profile_response.dart';
+import '../models/wiwit_api/tags/tag_list_response.dart';
+import '../models/wiwit_api/tags/tag_response.dart';
 import '../models/wiwit_api/transactions/transaction_list_response.dart';
 import '../models/wiwit_api/transactions/transaction_response.dart';
 import '../services/apis/analytics_service.dart';
@@ -14,6 +16,7 @@ import '../services/apis/auth_service.dart';
 import '../services/apis/category_service.dart';
 import '../services/apis/instance_service.dart';
 import '../services/apis/profile_service.dart';
+import '../services/apis/tag_service.dart';
 import '../services/apis/transaction_service.dart';
 import '../services/networking/auth_interceptor.dart';
 import '../services/networking/json_serializable_converter.dart';
@@ -40,6 +43,8 @@ ChopperClient chopperClient(Ref ref) {
     LoginResponse: LoginResponse.fromJson,
     CategoryListResponse: CategoryListResponse.fromJson,
     CategoryResponse: CategoryResponse.fromJson,
+    TagListResponse: TagListResponse.fromJson,
+    TagResponse: TagResponse.fromJson,
     TransactionListResponse: TransactionListResponse.fromJson,
     TransactionResponse: TransactionResponse.fromJson,
     ProfileResponse: ProfileResponse.fromJson,
@@ -52,6 +57,7 @@ ChopperClient chopperClient(Ref ref) {
       AuthService.create(),
       AnalyticsService.create(),
       CategoryService.create(),
+      TagService.create(),
       TransactionService.create(),
       ProfileService.create(),
       InstanceService.create(),
@@ -84,6 +90,10 @@ AnalyticsService analyticsService(Ref ref) =>
 @Riverpod(keepAlive: true, retry: _neverRetry)
 CategoryService categoryService(Ref ref) =>
     ref.watch(chopperClientProvider).getService<CategoryService>();
+
+@Riverpod(keepAlive: true, retry: _neverRetry)
+TagService tagService(Ref ref) =>
+    ref.watch(chopperClientProvider).getService<TagService>();
 
 @Riverpod(keepAlive: true, retry: _neverRetry)
 TransactionService transactionService(Ref ref) =>

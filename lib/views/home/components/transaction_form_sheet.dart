@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -9,12 +10,16 @@ import '../../../shared/components/confirm_dialog.dart';
 import '../../../shared/models/wiwit_api/categories/category_response.dart';
 import '../../../shared/models/wiwit_api/enums.dart';
 import '../../../shared/models/wiwit_api/problem_details.dart';
+import '../../../shared/models/wiwit_api/tags/tag_response.dart';
 import '../../../shared/models/wiwit_api/transactions/add_transaction_request.dart';
 import '../../../shared/models/wiwit_api/transactions/transaction_response.dart';
 import '../../../shared/providers/chopper_provider.dart';
+import '../../../shared/utils/tag_service_utils.dart';
 import '../../../shared/utils/format_utils.dart';
+import '../../../shared/utils/tag_color_utils.dart';
 import 'category_picker_sheet.dart';
 import 'section_label.dart';
+import 'tag_picker_sheet.dart';
 
 /// The UI for adding or editing a [transaction] record
 class TransactionFormSheet extends ConsumerStatefulWidget {
@@ -38,6 +43,8 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
   /// How many top categories to show
   static const _topCategoryCount = 3;
 
+  static const _topTagCount = 3;
+
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
@@ -51,6 +58,10 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
   int? _categoryId;
   var _categories = <CategoryResponse>[];
   var _isLoadingCategories = true;
+  late final Set<int> _initialTagIds;
+  late Set<int> _tagIds;
+  var _tags = <TagResponse>[];
+  var _isLoadingTags = true;
   var _showNotes = false;
   var _isSaving = false;
 
@@ -61,8 +72,11 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
     super.initState();
     _today = DateUtils.dateOnly(DateTime.now());
     _loadCategories();
+    _loadTags();
 
     final transaction = widget.transaction;
+    _initialTagIds = {...?transaction?.tags.map((tag) => tag.id)};
+    _tagIds = {..._initialTagIds};
     _initialAmountInCents = transaction == null
         ? 0
         : parseAmountInCents(transaction.amount);
@@ -107,6 +121,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
           _titleController.text.trim().isNotEmpty ||
           _notesController.text.trim().isNotEmpty ||
           _categoryId != null ||
+          _tagIds.isNotEmpty ||
           _date != _today ||
           _type != TransactionType.expense;
     }
@@ -115,6 +130,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
         _titleController.text.trim() != transaction.title ||
         _notesController.text.trim() != (transaction.notes ?? '').trim() ||
         _categoryId != transaction.category?.id ||
+        !setEquals(_tagIds, _initialTagIds) ||
         _date != _initialDate ||
         _type != transaction.type;
   }
@@ -196,6 +212,82 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
     });
   }
 
+  /// Keeps the current list when loading fails.
+  Future<void> _loadTags() async {
+    var tags = _tags;
+    try {
+      tags = await ref.read(tagServiceProvider).getAllTags();
+    } catch (e) {
+      log('Error occured: $e');
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _tags = tags;
+      _isLoadingTags = false;
+    });
+  }
+
+  /// Selected tags first, then the most used ones up to [_topTagCount].
+  List<TagResponse> get _chipTags {
+    final selected = _tags.where((tag) => _tagIds.contains(tag.id)).toList();
+    final unselected = _tags.where((tag) => !_tagIds.contains(tag.id)).toList()
+      ..sort((a, b) => b.transactionsCount.compareTo(a.transactionsCount));
+    final remaining = _topTagCount - selected.length;
+
+    if (remaining <= 0) return selected;
+
+    return [...selected, ...unselected.take(remaining)];
+  }
+
+  Future<void> _browseTags() async {
+    var didManage = false;
+
+    final picked = await showTagPickerSheet(
+      context: context,
+      tags: _tags,
+      selectedIds: _tagIds,
+      onTagsManaged: () => didManage = true,
+    );
+
+    if (!mounted) return;
+
+    if (didManage) {
+      await _loadTags();
+
+      if (!mounted) return;
+    }
+
+    setState(() {
+      final knownIds = _tags.map((tag) => tag.id).toSet();
+
+      if (picked != null) {
+        // Tags created inside the picker are not in the list we loaded.
+        _tags = [
+          ..._tags,
+          ...picked.where((tag) => !knownIds.contains(tag.id)),
+        ];
+        _tagIds = picked.map((tag) => tag.id).toSet();
+        return;
+      }
+
+      // Selected tags may have just been deleted on the manage page.
+      if (didManage) _tagIds.retainAll(knownIds);
+    });
+  }
+
+  void _toggleTag(int id, bool selected) {
+    setState(() {
+      if (selected) {
+        _tagIds.add(id);
+        return;
+      }
+
+      _tagIds.remove(id);
+    });
+  }
+
   Future<void> _pickDate() async {
     final selectedDate = await showDatePicker(
       context: context,
@@ -260,6 +352,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
           amount: _amountInCents / 100,
           type: _type,
           categoryId: _categoryId,
+          tagIds: _tagIds.toList(),
           notes: notes.isEmpty ? null : notes,
           transactionDate: _date,
         ),
@@ -267,9 +360,8 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
     } on ProblemDetails catch (error) {
       if (!mounted) return;
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.detail)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.detail)));
       return;
     }
 
@@ -320,6 +412,44 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
                 : 'Browse all ${_categories.length}',
           ),
           onPressed: _isSaving ? null : _browseCategories,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTagChips() {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (_isLoadingTags) {
+      return Text(
+        'Loading tags...',
+        style: TextStyle(color: colorScheme.outline),
+      );
+    }
+
+    return Wrap(
+      spacing: 8,
+      children: [
+        for (final tag in _chipTags)
+          FilterChip(
+            avatar: CircleAvatar(
+              radius: 6,
+              backgroundColor:
+                  parseTagColor(tag.color) ?? colorScheme.outlineVariant,
+            ),
+            label: Text(tag.name),
+            visualDensity: .comfortable,
+            selected: _tagIds.contains(tag.id),
+            showCheckmark: false,
+            onSelected: _isSaving
+                ? null
+                : (selected) => _toggleTag(tag.id, selected),
+          ),
+        ActionChip(
+          avatar: const Icon(Icons.search),
+          visualDensity: .comfortable,
+          label: Text(_tags.isEmpty ? 'Add tag' : 'Browse all ${_tags.length}'),
+          onPressed: _isSaving ? null : _browseTags,
         ),
       ],
     );
@@ -568,6 +698,9 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
                   const Gap(16),
                   SectionLabel(label: 'Category (optional)'),
                   _buildCategoryChips(),
+                  const Gap(16),
+                  SectionLabel(label: 'Tags (optional)'),
+                  _buildTagChips(),
                   const Gap(16),
                   SectionLabel(label: 'Date'),
                   _buildDateChips(),
