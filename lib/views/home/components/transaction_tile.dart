@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../shared/models/wiwit_api/enums.dart';
 import '../../../shared/models/wiwit_api/transactions/transaction_response.dart';
 import '../../../shared/utils/format_utils.dart';
+import 'transaction_tag_line.dart';
 
 /// A single transaction row in the recent transactions list.
 class TransactionTile extends StatelessWidget {
@@ -25,8 +26,9 @@ class TransactionTile extends StatelessWidget {
           transaction.title,
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
-        subtitle: Text(
-          transaction.category?.name ?? 'Uncategorized',
+        subtitle: TransactionTagLine(
+          category: transaction.category?.name ?? 'Uncategorized',
+          tags: transaction.tags,
           style: const TextStyle(fontSize: 12),
         ),
         trailing: Column(
